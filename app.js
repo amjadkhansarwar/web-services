@@ -2,18 +2,16 @@ const express = require('express')
 const app = express()
 const sqlite3 = require('sqlite3')
 const db = new sqlite3.Database('./db/chinook.db')
-//const { Sequelize,Model, DataTypes } = require('sequelize');
+const DEFAULT_PAGE_SIZE = 10
 
-// const database = new Sequelize({
-//   dialect: 'sqlite',
-//   storage: './db/chinook.db'
-// })
-
+app.use(express.json())
   
-app.get('/', async (req, res)=>{
-    await db.open('./db/chinook.db')
-
-    await db.close('./db/chinook.db')
+app.get('/',  (req, res)=>{
+    const page = req.query.page ? + req.body.page: 1
+    const pageSize = req.query.pageSize || DEFAULT_PAGE_SIZE
+    db.all('SELET * albums LIMIT ? OFFSET ?', [pageSize, (page -1)*pageSize], (error, rows)=>{
+        res.json()
+    })
     
     res.send(data)
 })
